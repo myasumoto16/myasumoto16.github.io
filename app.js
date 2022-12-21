@@ -1,17 +1,31 @@
 
 const grid = document.querySelector('.grid')
-let blackChipIndices = [];
-let whiteChipIndices = [];
+// let blackChipIndices = [];
+// let whiteChipIndices = [];
 const blackChipImage = "images/black-circle-chip.png"
 const whiteChipImage = "images/white-chip.png"
 const chipImages = [blackChipImage, whiteChipImage]
 let currentTurn = 0
+const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]]
+let visited = []
 
-const initialChipIndices = [27, 28, 35, 36]
+const initialChipIndices = [[3, 3], [3, 4], [4,3], [4,4]]
 
+let squares = []
+
+for (let i = 0; i < 8; i++) {
+    squares.push([8])
+}
 createSquares()
-const squares = document.querySelectorAll('.block');
+// let squareDisplays = Array.from(document.querySelectorAll('.block'))
+//
+//
+// let currentIndex = 0;
 
+// while(squareDisplays.length != 0) {
+//     squares.push(squareDisplays.splice(0, 8))
+// }
+console.log(squares)
 putInitialChips()
 
 function createSquares() {
@@ -19,6 +33,14 @@ function createSquares() {
         const square = document.createElement('div')
         const image = document.createElement('img')
         square.classList.add('block')
+
+        const row = getRow(i)
+        const column = getColumn(i)
+
+        console.log(row + " " + column)
+
+        squares[row][column] = square
+
 
         square.appendChild(image)
         square.addEventListener('click', play)
@@ -31,12 +53,13 @@ function putInitialChips() {
     let imagePath
     for (let i = 0; i < initialChipIndices.length; i++) {
 
-        const index = initialChipIndices[i]
+        const x = initialChipIndices[i][0]
+        const y = initialChipIndices[i][1]
 
-        const image = squares[index].querySelector('img');
+        const image = squares[x][y].querySelector('img');
 
 
-        if (index == 27 || index == 36) {
+        if (i == 0 || i == 3) {
             imagePath = whiteChipImage
         } else {
             imagePath = blackChipImage
@@ -55,10 +78,45 @@ function play() {
         alert('You can\'t put your chip there')
         return
     }
-    console.log('play')
+
+    visited = []
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            if (squares[i][j] == this) {
+                console.log('found a match')
+                flipChips(i, j)
+            }
+        }
+    }
+
+    placeChip(img)
+
+    console.log('no match')
+    currentTurn = (currentTurn + 1) % 2
+}
+
+function placeChip(img) {
     img.src = chipImages[currentTurn]
     img.classList.add('chip')
-    this.appendChild(img)
+}
 
-    currentTurn = (currentTurn + 1) % 2
+function flipChips(x, y) {
+    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == chipImages[currentTurn] || visited.includes(x * 8 + y)) {
+        return
+    }
+    visited.push(x * 8 + y)
+    directions.forEach(direction => {
+        flipChips(x + direction[0], y + direction[1])
+    })
+    const image = squares[x][y].querySelector('img')
+    placeChip(image)
+}
+
+
+function getRow(i) {
+    return Math.floor(i / 8)
+}
+
+function getColumn(i) {
+    return i % 8
 }
