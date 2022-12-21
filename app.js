@@ -80,7 +80,6 @@ function play() {
         return
     }
 
-    visited = []
 
     placeChip(img)
 
@@ -89,6 +88,7 @@ function play() {
             if (squares[i][j] == this) {
                 console.log('found a match')
                 directions.forEach(direction => {
+                    visited = []
                     flipChips(i + direction[0], j + direction[1], direction[0], direction[1])
                 })
             }
@@ -106,20 +106,25 @@ function placeChip(img) {
 }
 
 function flipChips(x, y, directionX, directionY) {
-    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == "" ||
-        squares[x][y].querySelector('img').src.includes(chipImages[currentTurn])|| visited.includes(x * 8 + y)) {
+    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == "") {
         console.log("base case")
         console.log(x + " " + y)
-        console.log(squares[x][y].querySelector('img').src + " =? " + chipImages[currentTurn])
-        console.log(visited)
-        console.log(x * 8 + y)
-        return
+        return false
+    }
+    if (squares[x][y].querySelector('img').src.includes(chipImages[currentTurn])) {
+        return true
     }
     console.log("dfs: " + x + " " + y)
-    visited.push(x * 8 + y)
-    flipChips(x + directionX, y + directionY)
-    const image = squares[x][y].querySelector('img')
-    placeChip(image)
+    // visited.push(x * 8 + y)
+
+    const validPath = flipChips(x + directionX, y + directionY)
+    if (validPath) {
+        const image = squares[x][y].querySelector('img')
+        placeChip(image)
+        return true
+    }
+
+    return false
 }
 
 
