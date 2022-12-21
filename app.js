@@ -7,7 +7,6 @@ const whiteChipImage = "images/white-chip.png"
 const chipImages = [blackChipImage, whiteChipImage]
 let currentTurn = 0
 const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]]
-let numOfEmptyBlocks = 81
 const map = new Map()
 
 const initialChipIndices = [[3, 3], [3, 4], [4,3], [4,4]]
@@ -110,7 +109,7 @@ function play() {
 
     displayBlackWhite()
 
-    if (numOfEmptyBlocks == 0) {
+    if (black + white == 64) {
         decideWinner()
         return
     }
@@ -135,7 +134,6 @@ function placeChip(img) {
 
     img.src = chipImages[currentTurn]
     img.classList.add('chip')
-    numOfEmptyBlocks--
 }
 
 function flipChips(x, y, directionX, directionY) {
