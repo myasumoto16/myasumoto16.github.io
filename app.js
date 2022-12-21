@@ -88,7 +88,7 @@ function play() {
             if (squares[i][j] == this) {
                 console.log('found a match')
                 directions.forEach(direction => {
-                    visited = []
+                    console.log('new direction ' + direction[0] + " " + direction[1])
                     flipChips(i + direction[0], j + direction[1], direction[0], direction[1])
                 })
             }
@@ -106,18 +106,22 @@ function placeChip(img) {
 }
 
 function flipChips(x, y, directionX, directionY) {
-    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == "") {
+    if (x < 0 || x >= 8 || y < 0 || y >= 8 ||
+        (!squares[x][y].querySelector('img').src.includes(blackChipImage) &&
+            !squares[x][y].querySelector('img').src.includes(whiteChipImage))) {
         console.log("base case")
         console.log(x + " " + y)
         return false
     }
     if (squares[x][y].querySelector('img').src.includes(chipImages[currentTurn])) {
+        console.log('found the same color at ' + x + " " + y)
         return true
     }
     console.log("dfs: " + x + " " + y)
+    console.log("direction: " + directionX + " " + directionY)
     // visited.push(x * 8 + y)
 
-    const validPath = flipChips(x + directionX, y + directionY)
+    const validPath = flipChips(x + directionX, y + directionY, directionX, directionY)
     if (validPath) {
         const image = squares[x][y].querySelector('img')
         placeChip(image)
