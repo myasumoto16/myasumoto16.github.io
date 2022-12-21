@@ -1,0 +1,31 @@
+.grid {
+    width: 616px;
+    height: 616px;
+    border: solid 1px black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -300px;
+    margin-left: -300px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.block {
+    width: 75px;
+    height: 75px;
+    border: solid 1px black;
+    background-color: lightgreen;
+}
+
+h1 {
+    text-align: center;
+    margin: 10px 10px 10px 10px;
+}
+
+.chip {
+    height: 70px;
+    width: 70px;
+    margin: 0 auto;
+    display: block;
+}
