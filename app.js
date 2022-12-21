@@ -7,9 +7,11 @@ const whiteChipImage = "images/white-chip.png"
 const chipImages = [blackChipImage, whiteChipImage]
 let currentTurn = 0
 const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]]
-let visited = []
+let numOfEmptyBlocks = 81
 
 const initialChipIndices = [[3, 3], [3, 4], [4,3], [4,4]]
+let white = 2
+let black = 2
 
 let squares = []
 
@@ -72,6 +74,8 @@ function putInitialChips() {
     console.log('src set')
 }
 
+let currentX
+let currentY
 function play() {
     console.log('new player')
     const img = this.querySelector('img')
@@ -81,28 +85,62 @@ function play() {
     }
 
 
-    placeChip(img)
+    let canPutChipThere = false
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (squares[i][j] == this) {
                 console.log('found a match')
+                currentX = i;
+                currentY = j;
                 directions.forEach(direction => {
                     console.log('new direction ' + direction[0] + " " + direction[1])
-                    flipChips(i + direction[0], j + direction[1], direction[0], direction[1])
+                    if(flipChips(i + direction[0], j + direction[1], direction[0], direction[1])) {
+                        canPutChipThere = true
+                    }
                 })
             }
         }
     }
+    if (canPutChipThere) {
+        placeChip(img)
+        currentTurn = (currentTurn + 1) % 2
+    } else {
+        alert('you can\'t put your chip there')
+    }
 
 
     console.log('no match')
-    currentTurn = (currentTurn + 1) % 2
+
+    displayBlackWhite()
+
+    if (numOfEmptyBlocks == 0) {
+        decideWinner()
+        return
+    }
 }
 
 function placeChip(img) {
+    if (img.src == "") {
+
+
+    if (chipImages[currentTurn].includes("black-circle-chip.png")) {
+        black++
+        if (img.src != "") {
+        white--;
+        }
+    }
+    } else {
+        white++
+        if (img.src != "") {
+            black--;
+        }
+
+    }
+
     img.src = chipImages[currentTurn]
     img.classList.add('chip')
+    numOfEmptyBlocks--
 }
 
 function flipChips(x, y, directionX, directionY) {
@@ -114,6 +152,9 @@ function flipChips(x, y, directionX, directionY) {
         return false
     }
     if (squares[x][y].querySelector('img').src.includes(chipImages[currentTurn])) {
+        if (isNeighbor(x, y)) {
+            return false
+        }
         console.log('found the same color at ' + x + " " + y)
         return true
     }
@@ -138,4 +179,29 @@ function getRow(i) {
 
 function getColumn(i) {
     return i % 8
+}
+
+function decideWinner() {
+    let winner
+    if (white > black) {
+        winner = "White"
+    } else {
+        winner = "Black"
+    }
+
+    document.querySelector('.result').innerHTML = winner + " won"
+
+
+}
+
+function displayBlackWhite() {
+    const blackDisplay = document.querySelector('.black')
+    const whiteDisplay = document.querySelector('.white')
+    blackDisplay.innerHTML = black
+    whiteDisplay.innerHTML = white
+}
+
+
+function isNeighbor(x, y) {
+    return Math.abs(x - currentX) <= 1 && Math.abs(y - currentY) <= 1
 }
