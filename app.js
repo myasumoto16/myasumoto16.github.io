@@ -73,6 +73,7 @@ function putInitialChips() {
 }
 
 function play() {
+    console.log('new player')
     const img = this.querySelector('img')
     if (img.src != "") {
         alert('You can\'t put your chip there')
@@ -80,16 +81,20 @@ function play() {
     }
 
     visited = []
+
+    placeChip(img)
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (squares[i][j] == this) {
                 console.log('found a match')
-                flipChips(i, j)
+                directions.forEach(direction => {
+                    flipChips(i + direction[0], j + direction[1], direction[0], direction[1])
+                })
             }
         }
     }
 
-    placeChip(img)
 
     console.log('no match')
     currentTurn = (currentTurn + 1) % 2
@@ -100,14 +105,19 @@ function placeChip(img) {
     img.classList.add('chip')
 }
 
-function flipChips(x, y) {
-    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == chipImages[currentTurn] || visited.includes(x * 8 + y)) {
+function flipChips(x, y, directionX, directionY) {
+    if (x < 0 || x >= 8 || y < 0 || y >= 8 || squares[x][y].querySelector('img').src == "" ||
+        squares[x][y].querySelector('img').src.includes(chipImages[currentTurn])|| visited.includes(x * 8 + y)) {
+        console.log("base case")
+        console.log(x + " " + y)
+        console.log(squares[x][y].querySelector('img').src + " =? " + chipImages[currentTurn])
+        console.log(visited)
+        console.log(x * 8 + y)
         return
     }
+    console.log("dfs: " + x + " " + y)
     visited.push(x * 8 + y)
-    directions.forEach(direction => {
-        flipChips(x + direction[0], y + direction[1])
-    })
+    flipChips(x + directionX, y + directionY)
     const image = squares[x][y].querySelector('img')
     placeChip(image)
 }
