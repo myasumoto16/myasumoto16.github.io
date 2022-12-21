@@ -8,6 +8,7 @@ const chipImages = [blackChipImage, whiteChipImage]
 let currentTurn = 0
 const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]]
 let numOfEmptyBlocks = 81
+const map = new Map()
 
 const initialChipIndices = [[3, 3], [3, 4], [4,3], [4,4]]
 let white = 2
@@ -19,14 +20,6 @@ for (let i = 0; i < 8; i++) {
     squares.push([8])
 }
 createSquares()
-// let squareDisplays = Array.from(document.querySelectorAll('.block'))
-//
-//
-// let currentIndex = 0;
-
-// while(squareDisplays.length != 0) {
-//     squares.push(squareDisplays.splice(0, 8))
-// }
 console.log(squares)
 putInitialChips()
 
@@ -42,6 +35,8 @@ function createSquares() {
         console.log(row + " " + column)
 
         squares[row][column] = square
+
+        map.set(square, [row, column])
 
 
         square.appendChild(image)
@@ -87,21 +82,22 @@ function play() {
 
     let canPutChipThere = false
 
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            if (squares[i][j] == this) {
-                console.log('found a match')
-                currentX = i;
-                currentY = j;
+    // for (let i = 0; i < 8; i++) {
+    //     for (let j = 0; j < 8; j++) {
+    //         if (squares[i][j] == this) {
+    //             console.log('found a match')
+                currentX = map.get(this)[0]
+                currentY = map.get(this)[1]
+                console.log("currents: " + currentX + ", " + currentY)
                 directions.forEach(direction => {
                     console.log('new direction ' + direction[0] + " " + direction[1])
-                    if(flipChips(i + direction[0], j + direction[1], direction[0], direction[1])) {
+                    if(flipChips(currentX + direction[0], currentY + direction[1], direction[0], direction[1])) {
                         canPutChipThere = true
                     }
                 })
-            }
-        }
-    }
+        //     }
+        // }
+    // }
     if (canPutChipThere) {
         placeChip(img)
         currentTurn = (currentTurn + 1) % 2
@@ -121,22 +117,21 @@ function play() {
 }
 
 function placeChip(img) {
-    if (img.src == "") {
 
 
-    if (chipImages[currentTurn].includes("black-circle-chip.png")) {
-        black++
-        if (img.src != "") {
-        white--;
+        if (chipImages[currentTurn].includes("black-circle-chip.png")) {
+            black++
+            if (img.src != "") {
+                white--;
+            }
+        } else {
+            white++
+            if (img.src != "") {
+                black--;
+            }
         }
-    }
-    } else {
-        white++
-        if (img.src != "") {
-            black--;
-        }
 
-    }
+
 
     img.src = chipImages[currentTurn]
     img.classList.add('chip')
