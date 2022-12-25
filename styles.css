@@ -29,3 +29,7 @@ h1 {
     margin: 0 auto;
     display: block;
 }
+body {
+    min-width: 850px;
+    min-height: 700px;
+}

@@ -1,7 +1,5 @@
 
 const grid = document.querySelector('.grid')
-// let blackChipIndices = [];
-// let whiteChipIndices = [];
 const blackChipImage = "images/black-circle-chip.png"
 const whiteChipImage = "images/white-chip.png"
 const chipImages = [blackChipImage, whiteChipImage]
@@ -81,22 +79,17 @@ function play() {
 
     let canPutChipThere = false
 
-    // for (let i = 0; i < 8; i++) {
-    //     for (let j = 0; j < 8; j++) {
-    //         if (squares[i][j] == this) {
-    //             console.log('found a match')
-                currentX = map.get(this)[0]
-                currentY = map.get(this)[1]
-                console.log("currents: " + currentX + ", " + currentY)
-                directions.forEach(direction => {
-                    console.log('new direction ' + direction[0] + " " + direction[1])
-                    if(flipChips(currentX + direction[0], currentY + direction[1], direction[0], direction[1])) {
+
+    currentX = map.get(this)[0]
+    currentY = map.get(this)[1]
+    console.log("currents: " + currentX + ", " + currentY)
+    directions.forEach(direction => {
+        console.log('new direction ' + direction[0] + " " + direction[1])
+        if(flipChips(currentX + direction[0], currentY + direction[1], direction[0], direction[1])) {
                         canPutChipThere = true
-                    }
-                })
-        //     }
-        // }
-    // }
+        }
+    })
+
     if (canPutChipThere) {
         placeChip(img)
         currentTurn = (currentTurn + 1) % 2
