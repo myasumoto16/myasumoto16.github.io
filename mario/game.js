@@ -196,7 +196,7 @@ scene("game", ({level, score, marioIsBig}) => {
             console.log('next scene')
             console.log('marioIsBig: ' + marioIsBig)
             go('game', {
-                level: parseInt(level + 1),
+                level: parseInt(level + 1) % maps.length,
                 score: scoreLabel.value,
                 marioIsBig: marioIsBig
             })
