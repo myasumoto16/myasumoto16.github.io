@@ -21,6 +21,7 @@ const aliens = [
 ]
 
 function draw() {
+    //hellos
     for (let i = 0; i < aliens.length; i++) {
         if (!aliensRemoved.includes(i) && aliens[i] < 225) {
             console.log('i: ' + i)

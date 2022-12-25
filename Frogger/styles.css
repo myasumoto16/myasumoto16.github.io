@@ -1,0 +1,51 @@
+.grid {
+    border: 1px solid black;
+    height: 180px;
+    width: 180px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.grid div{
+    height: 20px;
+    width:20px;
+}
+
+.ending-block {
+    background-color: red
+}
+
+.starting-block {
+    background-color: blue;
+}
+
+/*.log-left, .log-right {*/
+/*    background-color: lightblue;*/
+/*}*/
+
+/*.car-left, .car-right {*/
+/*    background-color: lightcoral;*/
+/*}*/
+
+
+.l1, .l2, .l3 {
+    background-color: brown
+}
+
+.l4, .l5 {
+    background-color: lightblue;
+}
+
+.c1, .c2 {
+    background-color: lightgray;
+}
+
+.c3 {
+    background-color: black;
+}
+
+/* last item will override the previous ones if they are in the same space */
+.frog {
+    background-color: green;
+}
