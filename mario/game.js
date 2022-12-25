@@ -37,7 +37,7 @@ loadSprite('blue-surprise', 'RMqCc1G.png')
 
 
 
-scene("game", ({level, score}) => {
+scene("game", ({level, score, marioIsBig}) => {
     layers(['bg', 'bog','ui'], 'obj')
 
     const maps = [
@@ -76,8 +76,8 @@ scene("game", ({level, score}) => {
             '?                                       ?',
             '?         @@@@@            x x          ?',
             '?                        x x x          ?',
-            '?                      x x x x   x      ?',
-            '?             s   s  x x x x x   x      ?',
+            '?                      x x x x   x  []  ?',
+            '?             s   s  x x x x x   x  ()  ?',
             '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
         ],
 
@@ -106,6 +106,8 @@ scene("game", ({level, score}) => {
 
     }
     //
+
+
     const gameLevel = addLevel(maps[level], levelCfg)
 
     const scoreLabel = add([
@@ -134,9 +136,17 @@ scene("game", ({level, score}) => {
         sprite('mario'), solid(),
         pos(50, 0),
         body(), //full gravity
-        big(),
+        big(marioIsBig),
         origin('bot') //get rid of funny things when using body
     ])
+
+    if (marioIsBig == null) {
+        marioIsBig = false
+        console.log("marioIsBig was changed from undefined to false")
+    } else if (marioIsBig) {
+        player.biggify()
+        console.log('biggerfy mario')
+    }
 
     player.on("headbump", (obj) => {
         if (obj.is('coin-surprise')) {
@@ -153,6 +163,7 @@ scene("game", ({level, score}) => {
     player.collides('mushroom', (m) => {
         destroy(m)
         player.biggify()
+        marioIsBig = true
     })
 
     player.collides('coin', (c) => {
@@ -163,7 +174,7 @@ scene("game", ({level, score}) => {
 
     player.collides('danger', (d) => {
 
-        if (isJumping) {
+        if (isJumping || !player.grounded()) {
             destroy(d)
         } else {
         // go to a different scene
@@ -183,9 +194,11 @@ scene("game", ({level, score}) => {
     player.collides('pipe', () => {
         keyPress('down', () => {
             console.log('next scene')
+            console.log('marioIsBig: ' + marioIsBig)
             go('game', {
                 level: parseInt(level + 1),
-                score: scoreLabel.value
+                score: scoreLabel.value,
+                marioIsBig: marioIsBig
             })
         })
     })
@@ -223,9 +236,14 @@ scene('lose', ({score}) => {
 
 start("game", {level: 0, score: 0})
 
-function big() {
+function big(marioIsBig) {
     let timer = 0
-    let isBig = false
+    let isBig = marioIsBig
+    if (isBig) {
+        console.log('start big')
+    } else {
+        console.log('start small')
+    }
     return {
         update() {
             if (isBig) {
@@ -241,13 +259,13 @@ function big() {
         smallify() {
             this.scale = vec2(1)
             timer = 0
-            isBig = false
+            marioIsBig = false
             currentJumpForce = JUMP_FORCE
         },
         biggify(time) {
             this.scale = vec2(1.5)
             timer = time
-            isBig = true
+            marioIsBig = true
             currentJumpForce = BIG_JUMP_FORCE
         }
     }
